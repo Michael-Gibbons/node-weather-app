@@ -1,6 +1,8 @@
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
+const forcast = require("./utils.js/forcast");
+const geocode = require("./utils.js/geocode");
 
 const app = express();
 
@@ -47,8 +49,26 @@ app.get('/help/*', (req, res) => {
 });
 
 app.get('/weather', (req, res) => {
-  res.send("View Weather");
+  if(!req.query.address){
+    return res.send({error: "You must provide an address"});
+  }
+  geocode(req.query.address, (err, data) => {
+    if(err){
+      return res.send({error: err});
+    }
+    forcast(data.latitude, data.longitude, (err, forcastData) => {
+      if(err){
+        return res.send({error: err});
+      }
+      res.send({
+        forcast: forcastData.weatherString,
+        location: data.location,
+        address: req.query.address
+      });
+    });
+  });
 });
+
 
 app.get('*', (req, res) => {
   res.render('404', {
