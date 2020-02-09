@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Michael-Gibbons/node-weather-app#readme",
   "dependencies": {
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "yargs": "^15.1.0"
   }
 }
