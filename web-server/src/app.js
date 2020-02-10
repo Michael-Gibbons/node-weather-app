@@ -1,7 +1,7 @@
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
-const forcast = require("./utils.js/forcast");
+const forecast = require("./utils.js/forecast");
 const geocode = require("./utils.js/geocode");
 
 const app = express();
@@ -56,12 +56,12 @@ app.get('/weather', (req, res) => {
     if(err){
       return res.send({error: err});
     }
-    forcast(data.latitude, data.longitude, (err, forcastData) => {
+    forecast(data.latitude, data.longitude, (err, forecastData) => {
       if(err){
         return res.send({error: err});
       }
       res.send({
-        forcast: forcastData.weatherString,
+        forecast: forecastData.weatherString,
         location: data.location,
         address: req.query.address
       });
