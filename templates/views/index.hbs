@@ -11,14 +11,18 @@
 <body>
   <div class="main-content">
     {{>header}}
-    <p>Use this site to get your weather!</p>
     <form action="">
       <input placeholder="Location">
       <button>Search</button>
     </form>
     <p id="message-1"></p>
-    <p id="message-2"></p>
+    <div id="forecast__container">
+      <div id="forecast-single-day"></div>
+      <div id="forecast"></div>
+    </div>
+    
   </div>
+  
   
   {{>footer}}
   <script src="js/app.js"></script>

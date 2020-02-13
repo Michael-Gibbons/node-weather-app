@@ -27,27 +27,27 @@ app.get('', (req, res) => {
   });
 });
 
-app.get('/about', (req, res) => {
-  res.render('about', {
-    title: "About Me",
-    name: "Michael Gibbons"
-  });
-});
+// app.get('/about', (req, res) => {
+//   res.render('about', {
+//     title: "About Me",
+//     name: "Michael Gibbons"
+//   });
+// });
 
-app.get('/help', (req, res) => {
-  res.render('help', {
-    helpText: "This is a help message",
-    title: "Help",
-    name: "Michael Gibbons"
-  });
-});
-app.get('/help/*', (req, res) => {
-  res.render('404', {
-    errMsg: "HELP ARTICLE NOT FOUND",
-    title: "404",
-    name: "Michael Gibbons"
-  });
-});
+// app.get('/help', (req, res) => {
+//   res.render('help', {
+//     helpText: "This is a help message",
+//     title: "Help",
+//     name: "Michael Gibbons"
+//   });
+// });
+// app.get('/help/*', (req, res) => {
+//   res.render('404', {
+//     errMsg: "HELP ARTICLE NOT FOUND",
+//     title: "404",
+//     name: "Michael Gibbons"
+//   });
+// });
 
 app.get('/weather', (req, res) => {
   if(!req.query.address){
@@ -64,7 +64,9 @@ app.get('/weather', (req, res) => {
       res.send({
         forecast: forecastData.weatherString,
         location: data.location,
-        address: req.query.address
+        address: req.query.address,
+        daily: forecastData.daily,
+        currently: forecastData.currently
       });
     });
   });
