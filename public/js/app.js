@@ -17,6 +17,7 @@ weatherForm.addEventListener('submit', (event)=>{
         weeklyHandler(dailyData);
         console.log(data.currently)
         dailyHandler(data.location, data.currently)
+        document.activeElement.blur();
       }
     })
   })
