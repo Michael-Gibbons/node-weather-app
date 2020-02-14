@@ -1,18 +1,22 @@
 const weatherForm = document.querySelector('form');
-const search = document.querySelector('input');
-const messageOne = document.querySelector('#message-1');
+const errMsg = document.querySelector('#errMsg');
+const loader = document.querySelector('.loader');
+const searchForm = document.querySelector('#searchForm');
 var dailyData;
+
 
 weatherForm.addEventListener('submit', (event)=>{
   event.preventDefault();
-  messageOne.textContent = "Gathering data please wait..";
+  loader.style.display = "block";
+  document.getElementById("forecast__container").style.display = "none";
+  weatherForm.style.display = "none";
 
   fetch("/weather?address="+ search.value).then((response)=>{
     response.json().then((data)=>{
       if(data.error){
-        messageOne.textContent = data.error;
+        errMsg.textContent = data.error;
       }else{
-        messageOne.textContent = '';
+        loader.style.display = "none";
         dailyData = data.daily;
         weeklyHandler(dailyData);
         console.log(data.currently)
@@ -49,7 +53,8 @@ function weeklyHandler(data){
     </div>`
   });
   document.getElementById("forecast").innerHTML = htmlTemplate;
-  document.getElementById("forecast__container").style.display = "block";
+  $("#forecast__container").fadeIn();
+  $(".search-again").fadeIn();
 };
 
 function dailyHandler(location, data){
@@ -66,3 +71,11 @@ function dailyHandler(location, data){
   `;
   document.getElementById("forecast-single-day").innerHTML = htmlTemplate;
 }
+$(".search-again").click(function(){
+  $("#forecast__container").fadeOut();
+  $(".search-again").fadeOut(500, function(){
+    $("form").fadeIn();
+  });
+  
+  
+})
