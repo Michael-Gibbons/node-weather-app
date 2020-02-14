@@ -16,12 +16,14 @@ weatherForm.addEventListener('submit', (event)=>{
       if(data.error){
         errMsg.textContent = data.error;
       }else{
-        loader.style.display = "none";
-        dailyData = data.daily;
-        weeklyHandler(dailyData);
-        console.log(data.currently)
-        dailyHandler(data.location, data.currently)
-        document.activeElement.blur();
+        setTimeout(function(){
+           loader.style.display = "none";
+           dailyData = data.daily;
+           weeklyHandler(dailyData);
+           console.log(data.currently)
+           dailyHandler(data.location, data.currently)
+           document.activeElement.blur();
+        }, 500);
       }
     })
   })
