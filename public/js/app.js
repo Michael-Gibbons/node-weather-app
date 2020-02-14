@@ -25,10 +25,39 @@ weatherForm.addEventListener('submit', (event)=>{
            document.activeElement.blur();
         }, 500);
       }
-    })
-  })
+    });
+  });
 })
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position){
+    console.log("/weather-quick?latitude="+ position.coords.latitude + "?longitude=" + position.coords.longitude)
+    fetch("/weather-quick?latitude="+ position.coords.latitude + "&&longitude=" + position.coords.longitude).then((response)=>{
+      response.json().then((data)=>{
+        if(data.error){
+          errMsg.textContent = data.error;
+        }else{
+          loader.style.display = "block";
+          document.getElementById("forecast__container").style.display = "none";
+          weatherForm.style.display = "none";
+          setTimeout(function(){
+             loader.style.display = "none";
+             dailyData = data.daily;
+             weeklyHandler(dailyData);
+             console.log(data.currently)
+             dailyHandler(data.location, data.currently)
+             document.activeElement.blur();
+          }, 500);
+        }
+      });
+    });
+    });
+    
 
+  } else { 
+    console.log("geolocation not supported");
+  }
+}
 function unixToDay(timestamp, abbr){
   if(abbr){
     var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; 
@@ -80,4 +109,6 @@ $(".search-again").click(function(){
   });
   
   
-})
+});
+
+getLocation();

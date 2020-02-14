@@ -3,6 +3,7 @@ const express = require('express');
 const hbs = require('hbs');
 const forecast = require("./utils.js/forecast");
 const geocode = require("./utils.js/geocode");
+const reverseGeocode = require("./utils.js/reverseGeocode");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -72,6 +73,25 @@ app.get('/weather', (req, res) => {
   });
 });
 
+app.get('/weather-quick', (req, res) => {
+  if(!req.query.latitude || !req.query.longitude){
+    return res.send({error: "Location not found"});
+  }
+  forecast(req.query.latitude, req.query.longitude, (err, forecastData) => {
+    if(err){
+      return res.send({error: err});
+    }
+    reverseGeocode(req.query.longitude, req.query.latitude, (err, data) => {
+      res.send({
+        forecast: forecastData.weatherString,
+        daily: forecastData.daily,
+        currently: forecastData.currently,
+        location: data.location
+      });
+    });
+
+  })
+});
 
 app.get('*', (req, res) => {
   res.render('404', {
