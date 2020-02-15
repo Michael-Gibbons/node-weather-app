@@ -208,6 +208,21 @@ button{
   display:block;
   margin:0 auto;
 }
+.tempChange__container{
+  padding-left:2em;
+}
+.tempChange{
+  text-align: center;
+  text-decoration: none;
+  color: #888;
+  padding: 0.2em;
+}
+.tempChange-active{
+  text-align: center;
+  text-decoration: none;
+  color: #2e2e2e;
+}
+
 /* Loading Spinner */
 
 .loader {
