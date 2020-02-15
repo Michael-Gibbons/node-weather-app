@@ -142,7 +142,7 @@ button{
   color:rgb(33, 33, 33);
   display:inline;
   font-family:arial, helvetica, sans-serif;
-  font-size:64px;
+  font-size: calc( 40px + (56 - 40) * (100vw - 400px) / (800 - 400) );
   text-align:left;
 }
 
@@ -209,7 +209,7 @@ button{
   margin:0 auto;
 }
 .tempChange__container{
-  padding-left:2em;
+  padding-left:1em;
 }
 .tempChange{
   text-align: center;
