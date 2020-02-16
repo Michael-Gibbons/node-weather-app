@@ -149,7 +149,7 @@ function getLocation() {
       });
     });
   } else {
-    console.log("geolocation not supported");
+    errorHandler("Geolocation not supported.")
   }
 }
 
