@@ -33,10 +33,18 @@ function showLoaderHideElse(){
   loader.show();
   $("forecast__container").hide();
   weatherForm.hide(); 
+  errMsg.hide();
 }
 
 function getPercentage(num){
   return Math.round(num*100) + "%";
+}
+
+function errorHandler(error){
+  loader.hide();
+  $("form").fadeIn();
+  errMsg.text(error);
+  errMsg.fadeIn();
 }
 
 // Weather Functions
@@ -85,12 +93,8 @@ function weeklyHandler(data) {
 
 function dailyHandler(location, data) {
   if(currentUnits == 'F'){
-    var Cclass = "";
-    var Fclass = "tempChange-active";
     var windUnits = "mph"
   }else{
-    var Cclass = "tempChange-active";
-    var Fclass = "";
     var windUnits = "kph"
   }
   
@@ -103,7 +107,7 @@ function dailyHandler(location, data) {
         <img class="forcast__day-large-icon" src="img/${data.icon}.svg">
         <div class ="forcast__day-current-temp unitTemp">${Math.round(data.temperature || data.temperatureHigh)}&#176;</div>
         <div class="tempChange__container">
-          <a id="F" class="tempChange" href="#">F&#176;</a> | <a id="C" class="tempChange" href="#">C&#176;</a>
+          <a id="F" class="tempChange" href="javascript:void();">F&#176;</a> | <a id="C" class="tempChange" href="javascript:void();">C&#176;</a>
         </div>
         <div class="forcast-single-day-data-rainchance__container">
           <div class="forcast-single-day-data-rainchance__item">
@@ -137,7 +141,7 @@ function getLocation() {
       fetch("/weather-quick?latitude=" + position.coords.latitude + "&&longitude=" + position.coords.longitude).then((response) => {
         response.json().then((data) => {
           if (data.error) {
-            errMsg.text( data.error );
+            errorHandler(data.error)
           } else {
             showWeather(data.daily,data.dailyC, data.currently, data.currentlyC, data.location);
           }
@@ -202,7 +206,7 @@ weatherForm.on('submit', (event) => {
   fetch("/weather?address=" + search.value).then((response) => {
     response.json().then((data) => {
       if (data.error) {
-        errMsg.text(data.error);
+        errorHandler(data.error)
       } else {
         showWeather(data.daily,data.dailyC, data.currently, data.currentlyC, data.location);
       }

@@ -57,6 +57,12 @@ button{
   color: white;
   padding: 8px;
 }
+#errMsg{
+  text-align: center;
+  margin-top:2rem;
+  color: #bb0000;
+  font-size:18px;
+}
 #forecast__container{
   border:1px solid #ebebeb;
   border-radius: 5px;
