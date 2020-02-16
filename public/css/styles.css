@@ -24,9 +24,10 @@ header{
 }
 
 h1{
-  font-size: calc( 40px + (56 - 40) * (100vw - 400px) / (800 - 400) );
+  font-size: calc( 40px + (50 - 40) * (100vw - 400px) / (800 - 400) );
   margin-bottom:16px;
   text-align: center;
+  line-height: normal;
 }
 
 header a {
@@ -93,6 +94,27 @@ button{
   text-align:left;
   padding:0.2rem 2rem; 
 }
+.forcast-single-day-data-rainchance__container{
+  margin-left: 4rem; 
+  margin-right:2rem;
+}
+@media only screen and (max-width: 450px) {
+  .forcast-single-day-data-rainchance__container{
+    margin-left: 3rem; 
+  } 
+}
+.forcast-single-day-data-rainchance__item{
+  display:flex;
+  margin-bottom:0.5rem;
+}
+
+.forcast-single-day-data-rainchance{
+  font-weight:100;
+  font-family:Roboto, arial, sans-serif;
+  color:rgb(135, 135, 135);
+  font-size: 20px;
+  margin-left: 0.5rem;
+}
 .forecast__day-container{
   text-align:center;
   min-width: 100px;
@@ -116,6 +138,10 @@ button{
   width:75px;
   height:75px;
   padding:2rem;
+}
+.forcast__day-small-icon{
+  width:25px; 
+  height:25px;
 }
 .forcast__day-highlow{
   margin-top:1rem;
@@ -142,8 +168,21 @@ button{
   color:rgb(33, 33, 33);
   display:inline;
   font-family:arial, helvetica, sans-serif;
-  font-size: calc( 40px + (56 - 40) * (100vw - 400px) / (800 - 400) );
+  font-size: calc( 40px + (50 - 40) * (100vw - 400px) / (800 - 400) );
   text-align:left;
+}
+.forecast__day-container{
+  padding: 1rem 0;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.forecast__day-container:hover{
+  border:1px solid #ebebeb;
+  border-radius: 5px;
+}
+.forecast__day-container-active{
+  background-color: #fcfcfc;
+  border-radius: 5px;
 }
 
 /* Search */

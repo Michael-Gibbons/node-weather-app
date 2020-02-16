@@ -44,7 +44,9 @@ app.get('/weather', (req, res) => {
         location: data.location,
         address: req.query.address,
         daily: forecastData.daily,
-        currently: forecastData.currently
+        currently: forecastData.currently,
+        dailyC: forecastData.dailyC,
+        currentlyC: forecastData.currentlyC
       });
     });
   });
@@ -62,7 +64,9 @@ app.get('/weather-quick', (req, res) => {
       res.send({
         daily: forecastData.daily,
         currently: forecastData.currently,
-        location: data.location
+        location: data.location,
+        dailyC: forecastData.dailyC,
+        currentlyC: forecastData.currentlyC
       });
     });
 

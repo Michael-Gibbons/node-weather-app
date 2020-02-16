@@ -2,6 +2,13 @@
 const weatherForm = $('form');
 const errMsg = $('#errMsg');
 const loader = $('.loader');
+var Userlocation;
+var weeklyDataF;
+var weeklyDataC;
+var currentlyDataF;
+var currentlyDataC;
+var currentUnits = 'F';
+var clickedDay;
 
 // Utility Functions
 function unixToDay(timestamp, abbr) {
@@ -28,17 +35,24 @@ function showLoaderHideElse(){
   weatherForm.hide(); 
 }
 
-function cToF(celsius){
-  return Math.round(celsius * 9 / 5 + 32);
+function getPercentage(num){
+  return Math.round(num*100) + "%";
 }
-
-function fToC(fahrenheit){
-  return Math.round((fahrenheit - 32) * 5 / 9);
-}
-
 
 // Weather Functions
-function showWeather(daily, location, currently){
+function showWeather(dailyF, dailyC, currentlyF, currentlyC, location){
+  weeklyDataF = dailyF;
+  weeklyDataC = dailyC;
+  currentlyDataF = currentlyF;
+  currentlyDataC = currentlyC;
+  Userlocation = location;
+  if(currentUnits == 'F'){
+    currently = currentlyF;
+    daily = dailyF;
+  }else{
+    currently = currentlyC;
+    daily = dailyC;
+  }
   showLoaderHideElse()
   setTimeout(function () {
     loader.hide();
@@ -49,9 +63,13 @@ function showWeather(daily, location, currently){
 }
 function weeklyHandler(data) {
   var htmlTemplate = '';
-  data.data.forEach(function (day) {
+  data.data.forEach(function (day, index) {
+    var activeClass = "";
+    if(index == clickedDay){
+      activeClass = "forecast__day-container-active";
+    }
     htmlTemplate = htmlTemplate + `
-    <div class="forecast__day-container">
+    <div class="forecast__day-container ${activeClass}" data-index=${index}>
       <div class="forecast__day-title">${unixToDay(day.time, true)}</div>
       <img class="forcast__day-icon" src="img/${day.icon}.svg">
       <div class="forcast__day-highlow">
@@ -66,21 +84,51 @@ function weeklyHandler(data) {
 };
 
 function dailyHandler(location, data) {
+  if(currentUnits == 'F'){
+    var Cclass = "";
+    var Fclass = "tempChange-active";
+    var windUnits = "mph"
+  }else{
+    var Cclass = "tempChange-active";
+    var Fclass = "";
+    var windUnits = "kph"
+  }
+  
   var htmlTemplate = `
     <div>
       <div class="forcast-single-day-location">${location}</div>
       <div class="forcast-single-day-data">${unixToDay(data.time, false)} ${unixToHour(data.time)}</div>
       <div class="forcast-single-day-data">${data.summary}</div>
-      <div style="display:flex; align-items: center;">
+      <div style="display:flex; align-items: center; flex-wrap:wrap;">
         <img class="forcast__day-large-icon" src="img/${data.icon}.svg">
-        <div class ="forcast__day-current-temp unitTemp">${Math.round(data.temperature)}&#176;</div>
+        <div class ="forcast__day-current-temp unitTemp">${Math.round(data.temperature || data.temperatureHigh)}&#176;</div>
         <div class="tempChange__container">
-          <a id="F" class="tempChange tempChange-active" href="#">F&#176;</a> | <a id="C" class="tempChange" href="#">C&#176;</a>
+          <a id="F" class="tempChange" href="#">F&#176;</a> | <a id="C" class="tempChange" href="#">C&#176;</a>
+        </div>
+        <div class="forcast-single-day-data-rainchance__container">
+          <div class="forcast-single-day-data-rainchance__item">
+            <img class="forcast__day-small-icon" src="img/raindrops-solid.svg">
+            <span class="forcast-single-day-data-rainchance">${getPercentage(data.precipProbability)}</span>
+          </div>
+          <div class="forcast-single-day-data-rainchance__item">
+            <img class="forcast__day-small-icon" src="img/humidity-regular.svg">
+            <span class="forcast-single-day-data-rainchance">${getPercentage(data.humidity)}</span>
+          </div>
+          <div class="forcast-single-day-data-rainchance__item">
+            <img class="forcast__day-small-icon" src="img/wind.svg">
+            <span class="forcast-single-day-data-rainchance unitWind">${Math.round(data.windSpeed)}${windUnits}</span>
+          </div>
         </div>    
       </div>
     </div>
   `;
   document.getElementById("forecast-single-day").innerHTML = htmlTemplate;
+  if(currentUnits == 'F'){
+    $("#F").addClass("tempChange-active");
+  }else{
+    $("#C").addClass("tempChange-active");
+  }
+  
 }
 
 function getLocation() {
@@ -91,7 +139,7 @@ function getLocation() {
           if (data.error) {
             errMsg.text( data.error );
           } else {
-            showWeather(data.daily,data.location, data.currently);
+            showWeather(data.daily,data.dailyC, data.currently, data.currentlyC, data.location);
           }
         });
       });
@@ -102,13 +150,47 @@ function getLocation() {
 }
 
 
-// Animations
+// Animations and Listeners
 $(".search-again").click(function () {
   $("#forecast__container").fadeOut();
   $(".search-again").fadeOut(500, function () {
     $("form").fadeIn();
   });
 });
+
+$("#forecast").on("click",".forecast__day-container", function(){
+  $(".forecast__day-container").removeClass("forecast__day-container-active");
+  $(this).addClass("forecast__day-container-active");
+  clickedDay= $(this).data("index");
+  
+  if(currentUnits == 'F'){
+    dailyHandler(Userlocation, weeklyDataF.data[clickedDay]);
+  }else{
+    dailyHandler(Userlocation, weeklyDataC.data[clickedDay]);
+  }
+  
+});
+
+$("#forecast-single-day").on("click", ".tempChange", function(){
+  if($(this).attr('id') == 'F' && ! $(this).hasClass( "tempChange-active")){
+    currentUnits = 'F';
+    weeklyHandler(weeklyDataF);
+    if(clickedDay != undefined){
+      dailyHandler(Userlocation, weeklyDataF.data[clickedDay]);
+    }else{
+      dailyHandler(Userlocation, currentlyDataF);
+    }
+       
+  }else if($(this).attr('id') == 'C' && ! $(this).hasClass( "tempChange-active")){
+    currentUnits = 'C';
+    weeklyHandler(weeklyDataC);
+    if(clickedDay != undefined){
+      dailyHandler(Userlocation, weeklyDataC.data[clickedDay]);
+    }else{
+      dailyHandler(Userlocation, currentlyDataC);
+    } 
+  }
+})
 
 
 // Main Proccess
@@ -122,24 +204,10 @@ weatherForm.on('submit', (event) => {
       if (data.error) {
         errMsg.text(data.error);
       } else {
-        showWeather(data.daily,data.location, data.currently);
+        showWeather(data.daily,data.dailyC, data.currently, data.currentlyC, data.location);
       }
     });
   });
 });
-$("#forecast-single-day").on("click", ".tempChange", function(){
-  if($(this).attr('id') == 'F' && ! $(this).hasClass( "tempChange-active")){
-    $(".unitTemp").each(function(){
-      temp = parseInt(this.innerHTML.replace(/\D/g,''));
-      this.innerHTML = cToF(temp) + '&#176;';
-    });
-  }else if($(this).attr('id') == 'C' && ! $(this).hasClass( "tempChange-active")){
-    $(".unitTemp").each(function(){
-      temp = parseInt(this.innerHTML.replace(/\D/g,''));
-      this.innerHTML = fToC(temp) + '&#176;';
-    });
-  }
-  $(".tempChange").removeClass( "tempChange-active" );
-  $(this).addClass( "tempChange-active");
-})
+
 
